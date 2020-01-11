@@ -26,14 +26,14 @@ def load():
 
 if __name__ == '__main__':
     images, tables = load()
-    for image in images.values():
 
-        img = img_as_ubyte(image)
+    for image in images:
+        img = img_as_ubyte(images[image])
         plate = segment_license_plate(img)
         plt.imshow(plate)
 
         chars = segment_characters(plate)
-        print(len(chars))
+        print(str(image) + ": " + str(len(chars)))
 
 
 

@@ -120,7 +120,7 @@ def segment_characters(image) :
 
     # Preprocess cropped license plate image
     img_lp = cv2.resize(image, (150, 75))
-    img_gray_lp = cv2.cvtColor(img_lp, cv2.COLOR_BGR2GRAY).astype('uint8')
+    img_gray_lp = cv2.cvtColor(img_lp, cv2.COLOR_BGR2GRAY)
     _, img_binary_lp = cv2.threshold(img_gray_lp, 100, 255, cv2.THRESH_BINARY+cv2.THRESH_OTSU)
     img_binary_lp = cv2.erode(img_binary_lp, (3, 3))
     img_binary_lp = cv2.dilate(img_binary_lp, (3,3))
