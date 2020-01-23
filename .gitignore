@@ -1,3 +1,7 @@
 /.idea/
 /venv/
 *.iml
+__pycache__/
+/dataset/
+/characters/
+/characters_test/
