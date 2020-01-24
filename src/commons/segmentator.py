@@ -16,15 +16,15 @@ class SegmentationError(Exception):
 
 class Segmentator:
 
-    def __init__(self, image, num_chars=7, min_char_w=7):
+    def __init__(self, image, num_chars=7, min_char_w=8):
         self.image = image
         self.num_chars = num_chars
         self.min_char_w = min_char_w
 
-    def detect(self):
+    def detect(self, training=False):
         lp = self.detect_character_candidates()
-        if lp.success:
-            return self.scissor(lp)
+        if lp.success or not training:
+            return self.cut(lp)
         else:
             raise SegmentationError
 
@@ -92,7 +92,7 @@ class Segmentator:
 
         return pruned_candidates, selected
 
-    def scissor(self, lp):
+    def cut(self, lp):
         contours, _ = cv2.findContours(lp.candidates.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         boxes = []
         chars = []
@@ -111,15 +111,3 @@ class Segmentator:
             chars.append(lp.thresh[start_y: end_y, start_x: end_x])
 
         return chars
-
-    @staticmethod
-    def preprocess_char(char):
-        contours, _ = cv2.findContours(char.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        if len(contours) == 0:
-            return None
-
-        c = max(contours, key=cv2.contourArea)
-        x, y, w, h = cv2.boundingRect(c)
-        char = char[y: y + h, x: x + w]
-
-        return char

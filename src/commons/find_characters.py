@@ -5,7 +5,7 @@ import os
 import cv2
 from pandas import read_csv
 
-from src.segmentator import Segmentator, SegmentationError
+from src.commons.segmentator import Segmentator, SegmentationError
 
 DATASET_PATH = ".." + os.sep + "dataset"
 CHARS_PATH = ".." + os.sep + "characters_test"
@@ -22,8 +22,7 @@ def main():
                 if os.path.exists(image_path):
                     lp = lp_description['lp']
                     image = cv2.imread(image_path)
-                    segmentator = Segmentator(image, num_chars=len(lp), min_char_w=8)
-                    chars = segmentator.detect()
+                    chars = find_chars(image, training=True)
 
                     for index in range(len(chars)):
                         label = lp[index]
@@ -43,6 +42,11 @@ def main():
 
             except:
                 pass
+
+
+def find_chars(image, training=False):
+    segmentator = Segmentator(image)
+    return segmentator.detect(training)
 
 
 if __name__ == '__main__':
