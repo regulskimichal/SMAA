@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import glob
 import os
 import pickle
@@ -10,7 +8,7 @@ import numpy as np
 from imutils import paths
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split, GridSearchCV
-from sklearn.svm import LinearSVC, SVC
+from sklearn.svm import SVC
 
 from src.commons.find_characters import LABEL_ENCODER, LABELS
 
