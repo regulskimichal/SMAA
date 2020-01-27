@@ -44,7 +44,7 @@ def main():
         "gamma": [1e-2, 1.8e-1, 1.5e-1, 1e-1]
     }
     print("Training")
-    grid_search = GridSearchCV(SVC(), parameters, n_jobs=-1, cv=2)
+    grid_search = GridSearchCV(SVC(), parameters, n_jobs=-1, verbose=2)
     grid_search.fit(X_train, y_train)
 
     y_pred = grid_search.predict(X_test)
