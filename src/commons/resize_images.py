@@ -1,6 +1,7 @@
 import os
 
 import cv2
+import numpy as np
 from imutils import paths
 
 IMAGE_ROOT_PATH = ".." + os.sep + "characters"
@@ -8,19 +9,12 @@ DESIRED_SIZE = 16
 
 
 def resize(image, size=DESIRED_SIZE):
-    old_size = image.shape[:2]
-    ratio = float(size) / max(old_size)
-    new_size = tuple([int(x * ratio) for x in old_size])
-    image = cv2.resize(image, (new_size[1], new_size[0]))
+    startx = (size - image.shape[1]) // 2
+    starty = (size - image.shape[0]) // 2
+    result = np.zeros((16, 16))
+    result[starty:starty + image.shape[0], startx:startx + image.shape[1]] = image
 
-    delta_w = size - new_size[1]
-    delta_h = size - new_size[0]
-    top, bottom = delta_h // 2, delta_h - (delta_h // 2)
-    left, right = delta_w // 2, delta_w - (delta_w // 2)
-
-    color = [0, 0, 0]
-    image = cv2.copyMakeBorder(image, top, bottom, left, right, cv2.BORDER_CONSTANT, value=color)
-    return cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    return result
 
 
 if __name__ == '__main__':

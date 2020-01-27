@@ -4,11 +4,17 @@ import os
 
 import cv2
 from pandas import read_csv
+from sklearn.preprocessing import LabelEncoder
 
+from src.commons.resize_images import resize
 from src.commons.segmentator import Segmentator, SegmentationError
 
-DATASET_PATH = ".." + os.sep + "dataset"
-CHARS_PATH = ".." + os.sep + "characters_test"
+DATASET_PATH = ".." + os.sep + ".." + os.sep + "dataset"
+CHARS_PATH = ".." + os.sep + ".." + os.sep + "characters_test"
+LABELS = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L',
+          'M', 'N', 'P', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+LABEL_ENCODER = LabelEncoder()
+LABEL_ENCODER.fit(LABELS)
 
 
 def main():
@@ -24,8 +30,9 @@ def main():
                     image = cv2.imread(image_path)
                     chars = find_chars(image, training=True)
 
-                    for index in range(len(chars)):
-                        label = lp[index]
+                    for i in range(len(chars)):
+                        char = chars[i]
+                        label = lp[i]
                         dir_path = CHARS_PATH + os.sep + label
 
                         if not os.path.exists(dir_path):
@@ -33,7 +40,7 @@ def main():
 
                         count = counts.get(label, 1)
                         path = dir_path + os.sep + str(count).zfill(6) + '.png'
-                        cv2.imwrite(path, chars[index])
+                        cv2.imwrite(path, resize(char))
 
                         counts[label] = count + 1
 

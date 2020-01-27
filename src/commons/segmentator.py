@@ -65,32 +65,9 @@ class Segmentator:
 
         char_candidates = segmentation.clear_border(char_candidates)
         contours, _ = cv2.findContours(char_candidates.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-        if len(contours) > self.num_chars:
-            char_candidates, contours = self.prune_candidates(char_candidates, contours)
 
         return LicensePlate(success=len(contours) == self.num_chars, plate=plate, thresh=thresh,
                             candidates=char_candidates)
-
-    def prune_candidates(self, char_candidates, contours):
-        pruned_candidates = np.zeros(char_candidates.shape, dtype="uint8")
-        dims = []
-
-        for c in contours:
-            box_x, box_y, box_w, box_h = cv2.boundingRect(c)
-            dims.append(box_y + box_h)
-
-        dims = np.array(dims)
-        diffs = []
-        selected = []
-
-        for i in range(0, len(dims)):
-            diffs.append(np.absolute(dims - dims[i]).sum())
-
-        for i in np.argsort(diffs)[:self.num_chars]:
-            cv2.drawContours(pruned_candidates, [contours[i]], -1, 255, -1)
-            selected.append(contours[i])
-
-        return pruned_candidates, selected
 
     def cut(self, lp):
         contours, _ = cv2.findContours(lp.candidates.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)

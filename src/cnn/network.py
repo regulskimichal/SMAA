@@ -2,14 +2,24 @@ import torch
 import torch.nn.functional as F
 from torch import nn
 
+from src.commons.find_characters import LABELS
+from src.commons.resize_images import DESIRED_SIZE
+
+CONV1_KERNEL_SIZE = 3
+CONV2_KERNEL_SIZE = 3
+
+CONV1_OUT_SIZE = 16
+CONV2_OUT_SIZE = 64
+LINEAR1_OUT_SIZE = 256
+
 
 class Network(nn.Module):
     def __init__(self):
         super(Network, self).__init__()
-        self.conv1 = nn.Conv2d(1, 32, 3)
-        self.conv2 = nn.Conv2d(32, 64, 3)
-        self.fc1 = nn.Linear(16 * 16 * 3 * 3, 256)
-        self.fc2 = nn.Linear(256, 35)
+        self.conv1 = nn.Conv2d(1, CONV1_OUT_SIZE, CONV1_KERNEL_SIZE)
+        self.conv2 = nn.Conv2d(CONV1_OUT_SIZE, CONV2_OUT_SIZE, CONV2_KERNEL_SIZE)
+        self.fc1 = nn.Linear(DESIRED_SIZE * DESIRED_SIZE * CONV1_KERNEL_SIZE * CONV2_KERNEL_SIZE, LINEAR1_OUT_SIZE)
+        self.fc2 = nn.Linear(LINEAR1_OUT_SIZE, len(LABELS))
 
     def forward(self, x):
         x = self.conv1(x)
